@@ -1,0 +1,50 @@
+name: Publish (Not-Quite-Unicorns)
+
+# Pushes ghcr.io/not-quite-unicorns/locomotive:<tag> for tags like 1.1.4-nqu.1.
+# Never pushes latest; consumers pin a tag or digest.
+
+on:
+  push:
+    tags: ['*-nqu.*']
+
+jobs:
+  build:
+    uses: ./.github/workflows/docker-build.yml
+    with:
+      push: true
+      image: ghcr.io/not-quite-unicorns/locomotive
+    permissions:
+      packages: write
+    secrets: inherit
+
+  manifest:
+    name: Push Manifest
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+    steps:
+      - name: Download digests
+        uses: actions/download-artifact@v8
+        with:
+          path: /tmp/digests
+          pattern: digest-*
+          merge-multiple: true
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Log into ghcr.io
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and push manifest
+        working-directory: /tmp/digests
+        run: |
+          docker buildx imagetools create \
+            -t ghcr.io/not-quite-unicorns/locomotive:${{ github.ref_name }} \
+            $(printf 'ghcr.io/not-quite-unicorns/locomotive@sha256:%s ' *)
+          docker buildx imagetools inspect ghcr.io/not-quite-unicorns/locomotive:${{ github.ref_name }}

@@ -90,6 +90,8 @@ func init() {
 		os.Exit(1)
 	}
 
+	Global.RailwayApiKey = strings.TrimSpace(Global.RailwayApiKey)
+
 	Global.WebhookMode = WebhookMode(strings.ToLower(strings.TrimSpace(string(Global.WebhookMode))))
 
 	if _, ok := WebhookModeToConfig[Global.WebhookMode]; !ok {

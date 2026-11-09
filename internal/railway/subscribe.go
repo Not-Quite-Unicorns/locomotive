@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 
@@ -19,11 +18,11 @@ func (g *GraphQLClient) CreateWebSocketSubscription(ctx context.Context, payload
 		return nil, err
 	}
 
+	header := http.Header{"Content-Type": []string{"application/json"}}
+	setAuthHeader(header, g.AuthToken)
+
 	opts := &websocket.DialOptions{
-		HTTPHeader: http.Header{
-			"Authorization": []string{fmt.Sprintf("Bearer %s", g.AuthToken.String())},
-			"Content-Type":  []string{"application/json"},
-		},
+		HTTPHeader:   header,
 		Subprotocols: []string{"graphql-transport-ws"},
 	}
 

@@ -28,7 +28,7 @@ type WebhookConfig struct {
 }
 
 type config struct {
-	RailwayApiKey uuid.UUID   `env:"RAILWAY_API_KEY,required,notEmpty"`
+	RailwayApiKey string      `env:"RAILWAY_API_KEY,required,notEmpty"`
 	EnvironmentId uuid.UUID   `env:"ENVIRONMENT_ID,required,notEmpty"`
 	ServiceIds    []uuid.UUID `env:"SERVICE_IDS,required,notEmpty"`
 

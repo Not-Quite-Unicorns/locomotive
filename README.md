@@ -40,8 +40,8 @@ Configuration is done through environment variables. See explanation and example
 
     **Required**.
 
-    - Project-level tokens do not work.
-    - Team-scoped tokens do not work.
+    - Workspace (`rlwy_wksp_...`) and account tokens are sent as `Authorization: Bearer`.
+    - Project tokens (`rlwy_proj_...`) are sent as `Project-Access-Token`. Scope the token to the environment set in `LOCOMOTIVE_ENVIRONMENT_ID`.
 
     Generate a [Railway API Token](https://railway.com/account/tokens)
 
